@@ -1,26 +1,37 @@
 name: Publish Package to npmjs
 
 on:
- release:
-   types: [created]
+  release:
+    types: [created]
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
- publish:
-   runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm test
 
-   permissions:
-     contents: read
-     id-token: write
-
-   steps:
-     - uses: actions/checkout@v3
-     - uses: actions/setup-node@v3
-       with:
-         node-version: '18'
-         registry-url: 'https://registry.npmjs.org'
-         cache: npm
-     - run: npm install -g npm@latest
-     - run: npm ci
-     - run: npm publish --provenance --access public
-       env:
-         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+      # Ensure npm 11.5.1 or later is installed
+      - name: Update npm
+        run: npm install -g npm@latest
+      - run: npm ci
+      # It is recommend to publish to npm using trusted publishing; for details,
+      # see: https://docs.npmjs.com/trusted-publishers
+      - run: npm publish
