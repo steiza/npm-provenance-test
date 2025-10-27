@@ -34,4 +34,3 @@ jobs:
       # It is recommend to publish to npm using trusted publishing; for details,
       # see: https://docs.npmjs.com/trusted-publishers
       - run: npm publish
-        env:
