@@ -1,0 +1,15 @@
+name: Testing Actions firewall
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04-firewall
+    steps:
+      - run: echo "hello world!"
+      - run: curl https://bing.com
+
