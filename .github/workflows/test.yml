@@ -7,9 +7,12 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  test-nested:
     runs-on: ubuntu-24.04-firewall
     steps:
-      - run: echo "hello world!"
-      - run: curl https://bing.com
+      - run: git clone https://github.com/cli/cli.git && cd cli && make && make test
 
+  baseline:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: git clone https://github.com/cli/cli.git && cd cli && make && make test
